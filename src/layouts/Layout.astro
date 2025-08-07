@@ -1,5 +1,7 @@
 ---
-import "../assets/app.css";
+import "../styles/app.css";
+import NavBar from "../components/NavBar.astro";
+import Footer from "../components/Footer.astro";
 ---
 
 <!doctype html>
@@ -12,7 +14,9 @@ import "../assets/app.css";
 		<title>Lightning Lessons music school</title>
 	</head>
 	<body>
+		<NavBar />
 		<slot />
+		<Footer />
 	</body>
 </html>
 
