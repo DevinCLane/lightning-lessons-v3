@@ -1,4 +1,4 @@
-# Astro Starter Kit: Basics
+# Lightning Lessons music school
 
 ```sh
 npm create astro@latest -- --template basics
