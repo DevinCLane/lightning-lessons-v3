@@ -1,23 +1,29 @@
 # Lightning Lessons music school
 
+This is a website for the online music school Lightning Lessons
+
+## Tech Stack
+
+-   Astro
+-   DaisyUI
+-   TailwindCSS
+
 ```sh
 npm create astro@latest -- --template basics
 ```
-
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
 ## 🚀 Project Structure
 
 Inside of your Astro project, you'll see the following folders and files:
 
 ```text
-/
 ├── public/
+
 │   └── favicon.svg
 ├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
+│   ├── assets
+│   │   └── astro.svg
+│   ├── components
 │   │   └── Welcome.astro
 │   ├── layouts
 │   │   └── Layout.astro

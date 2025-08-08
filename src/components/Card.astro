@@ -1,0 +1,19 @@
+---
+import {Image} from "astro:assets";
+
+const { title, description, image, imageAlt } = Astro.props;
+---
+
+<div class="card bg-base-100 w-96 shadow-sm">
+  <div class="card-body">
+    <h2 class="card-title">{title}</h2>
+    <p>{description}</p>
+  </div>
+  {image && (
+    <figure>
+      <Image
+        src={image}
+        alt={imageAlt || ""} />
+    </figure>
+  )}
+</div>
