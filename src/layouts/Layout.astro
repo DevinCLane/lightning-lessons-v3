@@ -13,9 +13,11 @@ import Footer from "../components/Footer.astro";
 		<meta name="generator" content={Astro.generator} />
 		<title>Lightning Lessons music school</title>
 	</head>
-	<body>
+	<body class="flex flex-col min-h-screen">
 		<NavBar />
-		<slot />
+		<main class="flex-1 flex flex-col">
+			<slot />
+		</main>
 		<Footer />
 	</body>
 </html>
