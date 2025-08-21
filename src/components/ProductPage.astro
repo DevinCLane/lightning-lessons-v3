@@ -1,0 +1,25 @@
+---
+import HeroWithImage from "./HeroWithImage.astro";
+const { title, description, image, imageAlt, link, linkText } = Astro.props;
+---
+
+<section class="flex flex-col sm:items-center">
+    <HeroWithImage
+        title={title}
+        description={description}
+        image={image}
+        imageAlt={imageAlt}
+        link={link}
+        linkText={linkText}
+    />
+    <div class="mx-4 mt-4 flex flex-col gap-4 sm:max-w-2/3">
+        <slot name="content">
+            <!-- Default content if no slot is provided -->
+            <h2 class="text-4xl font-bold">{title}</h2>
+            <p class="text-xl">{description}</p>
+        </slot>
+    </div>
+    <div class="m-6 text-center">
+        <a href={link}><button class="btn btn-primary">Sign up</button></a>
+    </div>
+</section>
