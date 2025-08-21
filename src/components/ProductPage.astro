@@ -1,25 +1,23 @@
 ---
-import HeroWithImage from "./HeroWithImage.astro";
+import { Image } from "astro:assets";
 const { title, description, image, imageAlt, link, linkText } = Astro.props;
+const finalLink = link ?? "https://buy.stripe.com/8x26oIb7seZPfvj4qe8bS00";
+const finalLinkText = linkText ?? "Sign up";
 ---
 
-<section class="flex flex-col sm:items-center">
-    <HeroWithImage
-        title={title}
-        description={description}
-        image={image}
-        imageAlt={imageAlt}
-        link={link}
-        linkText={linkText}
-    />
-    <div class="mx-4 mt-4 flex flex-col gap-4 sm:max-w-2/3">
+<section class="flex flex-col lg:flex-row mx-4 gap-6 sm:gap-4 sm:mt-4">
+    <Image src={image} alt={imageAlt} class="rounded-lg shadow-2xl self-start"/>
+    <div class="sm:mx-4 flex flex-col gap-4 sm:max-w-2/3 sm:self-center">
+        <h1 class="text-5xl font-bold">{title}</h1>
+        <p class="py-6">
+            {description}
+        </p>
+        <a href={finalLink}
+            ><button class="btn btn-primary btn-lg btn-wide">{finalLinkText}</button></a
+        >
         <slot name="content">
             <!-- Default content if no slot is provided -->
             <h2 class="text-4xl font-bold">{title}</h2>
             <p class="text-xl">{description}</p>
         </slot>
-    </div>
-    <div class="m-6 text-center">
-        <a href={link}><button class="btn btn-primary">Sign up</button></a>
-    </div>
 </section>
