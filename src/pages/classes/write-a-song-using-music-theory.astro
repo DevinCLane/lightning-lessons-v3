@@ -6,13 +6,14 @@ import ProductPage from "../../components/ProductPage.astro";
 
 <Layout>
     <ProductPage
-        title="Write a song using music theory"
-        description="$200 USD"
-        image={guitar}
-        imageAlt="Card Image"
-        link="https://buy.stripe.com/8x26oIb7seZPfvj4qe8bS00"
-        linkText="Sign up"
+    title="Write a song using music theory"
+    price="200"
+    image={guitar}
+    imageAlt="Card Image"
+    link="https://buy.stripe.com/8x26oIb7seZPfvj4qe8bS00"
+    linkText="Sign up"
     >
+    
         <Fragment slot="content">
             <!-- detailed product description -->
             <div class="mt-6 space-y-4">
@@ -36,7 +37,7 @@ import ProductPage from "../../components/ProductPage.astro";
                         <strong>Duration:</strong> 4 weeks
                     </li>
                     <li>
-                        <strong>Format:</strong> Live 1 hour classes on Zoom
+                        <strong>Format:</strong> Weekly live 1 hour classes on Zoom
                     </li>
                     <li>
                         <strong>Prerequisites:</strong> None
@@ -79,5 +80,5 @@ import ProductPage from "../../components/ProductPage.astro";
                 </ul>
             </div>
         </Fragment>
-    </ProductPage></Layout
->
+    </ProductPage>
+</Layout>

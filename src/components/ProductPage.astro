@@ -1,6 +1,6 @@
 ---
 import { Image } from "astro:assets";
-const { title, description, image, imageAlt, link, linkText } = Astro.props;
+const { title, description, image, imageAlt, link, linkText, price } = Astro.props;
 const finalLink = link ?? "https://buy.stripe.com/8x26oIb7seZPfvj4qe8bS00";
 const finalLinkText = linkText ?? "Sign up";
 ---
@@ -8,9 +8,9 @@ const finalLinkText = linkText ?? "Sign up";
 <section class="flex flex-col lg:flex-row mx-4 gap-6 sm:gap-4 sm:mt-4">
     <Image src={image} alt={imageAlt} class="rounded-lg shadow-2xl self-start"/>
     <div class="sm:mx-4 flex flex-col gap-4 sm:max-w-2/3 sm:self-center">
-        <h1 class="text-5xl font-bold">{title}</h1>
-        <p class="py-6">
-            {description}
+        <h1 class="text-5xl leading-14 font-bold">{title}</h1>
+        <p class="mb-4">
+            ${price} USD
         </p>
         <a href={finalLink}
             ><button class="btn btn-primary btn-lg btn-wide">{finalLinkText}</button></a

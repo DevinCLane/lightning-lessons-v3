@@ -1,17 +1,17 @@
 {
-  "name": "ll-2025-08-05",
-  "type": "module",
-  "version": "0.0.1",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@tailwindcss/vite": "^4.1.11",
-    "astro": "^5.13.2",
-    "daisyui": "^5.0.50",
-    "tailwindcss": "^4.1.11"
-  }
+    "name": "lightning-lessons-v2",
+    "type": "module",
+    "version": "0.0.1",
+    "scripts": {
+        "dev": "astro dev",
+        "build": "astro build",
+        "preview": "astro preview",
+        "astro": "astro"
+    },
+    "dependencies": {
+        "@tailwindcss/vite": "^4.1.11",
+        "astro": "^5.13.2",
+        "daisyui": "^5.0.50",
+        "tailwindcss": "^4.1.11"
+    }
 }
