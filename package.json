@@ -1,17 +1,8 @@
 {
     "name": "lightning-lessons-v3",
-    "type": "module",
-    "version": "0.0.1",
+    "private": true,
     "scripts": {
-        "dev": "astro dev",
-        "build": "astro build",
-        "preview": "astro preview",
-        "astro": "astro"
-    },
-    "dependencies": {
-        "@tailwindcss/vite": "^4.1.11",
-        "astro": "^5.13.2",
-        "daisyui": "^5.0.50",
-        "tailwindcss": "^4.1.11"
+        "dev": "pnpm -r dev",
+        "start": "pnpm -r start"
     }
 }
