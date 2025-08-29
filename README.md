@@ -4,32 +4,41 @@ This is a website for the online music school Lightning Lessons
 
 ## Tech Stack
 
--   Astro
--   DaisyUI
--   TailwindCSS
-
-```sh
-npm create astro@latest -- --template basics
-```
+-   Frontend:
+    -   Astro
+    -   DaisyUI
+    -   TailwindCSS
+-   Backend:
+    -   Hono
+    -   Postgres database
 
 ## 🚀 Project Structure
 
-Inside of your Astro project, you'll see the following folders and files:
+Monorepo with an Astro app for the frontend, and Hono for the backend. Using pnpm workspaces.
 
 ```text
-├── public/
-
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
+├── backend/
+│   ├── src/
+│   ├── .env
+│   ├── .env.example
+│   ├── package.json
+│   └── tsconfig.json
+│
+├── frontend/
+│   ├── public/               # Static assets (not optimized by Astro)
+│   │   └── images/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── images/
+│   │   └── layouts/          # Reusable layouts for Astro
+│   ├── astro.config.mjs      # Astro configuration file
+│   ├── netlify.toml          # Netlify deployment configuration
+│   └── package.json
+│
+├── .gitignore
+├── package.json
+├── pnpm-workspace.yaml
+└── README.md
 ```
 
 To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
@@ -38,15 +47,7 @@ To learn more about the folder structure of an Astro project, refer to [our guid
 
 All commands are run from the root of the project, from a terminal:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Command        | Action                                                             |
+| :------------- | :----------------------------------------------------------------- |
+| `pnpm install` | Installs dependencies                                              |
+| `pnpm dev`     | Starts fronend at `localhost:4321` and backend at `localhost:3000` |
