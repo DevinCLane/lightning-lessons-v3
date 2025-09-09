@@ -41,7 +41,11 @@ Monorepo with an Astro app for the frontend, and Hono for the backend. Using pnp
 └── README.md
 ```
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+## Deployment story
+
+-   Frontend: Netlify
+-   Backend: GCP Cloud run
+-   Database: Neon postgres
 
 ## 🧞 Commands
 
@@ -50,4 +54,4 @@ All commands are run from the root of the project, from a terminal:
 | Command        | Action                                                             |
 | :------------- | :----------------------------------------------------------------- |
 | `pnpm install` | Installs dependencies                                              |
-| `pnpm dev`     | Starts fronend at `localhost:4321` and backend at `localhost:3000` |
+| `pnpm dev`     | Starts fronend at `localhost:4321` and backend at `localhost:8080` |

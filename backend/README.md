@@ -1,8 +1,14 @@
 ```
-npm install
-npm run dev
+pnpm install
+pnpm run dev
 ```
 
 ```
-open http://localhost:3000
+open http://localhost:8080
+```
+
+## Deploy
+
+```
+gcloud run deploy my-app --source . --allow-unauthenticated
 ```
