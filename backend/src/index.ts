@@ -2,6 +2,7 @@ import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { neon } from "@neondatabase/serverless";
 import { env } from "hono/adapter";
+import { cors } from "hono/cors";
 import Stripe from "stripe";
 
 type Variables = {
@@ -10,6 +11,8 @@ type Variables = {
 };
 
 const app = new Hono<{ Variables: Variables }>();
+
+app.use("*", cors());
 
 /**
  * Setup Stripe SDK prior to handling a request
@@ -33,19 +36,25 @@ app.use("*", async (context, next) => {
     await next();
 });
 
-// app.get("/", async (context) => {
-//     const { DATABASE_URL } = env<{ DATABASE_URL: string }>(context);
-//     try {
-//         const sql = neon(DATABASE_URL);
-//         const response = await sql`SELECT version()`;
-//         return context.json({ version: response[0]?.version });
-//     } catch (error) {
-//         console.error("Database query failed:", error);
-//         return context.text("Failed to connect to database", 500);
-//     }
-// });
+/**
+ * setup database (should this move to the middleware for stripe setup or be its own middleware?)
+ */
+app.get("/", async (context) => {
+    const { DATABASE_URL } = env<{ DATABASE_URL: string }>(context);
+    try {
+        const sql = neon(DATABASE_URL);
+        const response = await sql`SELECT version()`;
+        return context.json({ version: response[0]?.version });
+    } catch (error) {
+        console.error("Database query failed:", error);
+        return context.text("Failed to connect to database", 500);
+    }
+});
 
-app.post("/checkout", async (context) => {
+/**
+ * creates a Stripe checkout session and returns the client secret
+ */
+app.post("/create-checkout-session", async (context) => {
     // Retrieve the Stripe client from the variable object
     const stripe = context.var.stripe;
 
@@ -65,10 +74,26 @@ app.post("/checkout", async (context) => {
         mode: "payment",
         ui_mode: "embedded",
         return_url:
+            // to do: set the return url properly for dev and prod
             "https://example.com/checkout/return?session_id={CHECKOUT_SESSION_ID}",
     });
 
     return context.json({ clientSecret: session.client_secret });
+});
+
+app.get("/session_status", async (context) => {
+    // Retrieve the Stripe client from the variable object
+    const stripe = context.var.stripe;
+
+    const session = await stripe.checkout.sessions.retrieve(
+        context.req.query.session_id
+    );
+
+    context.json({
+        status: session.status,
+        payment_status: session.payment_status,
+        customer_email: session.customer_details?.email,
+    });
 });
 
 serve(

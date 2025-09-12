@@ -1,0 +1,25 @@
+---
+import "../styles/app.css";
+import Footer from "../components/Footer.astro";
+import CheckoutNav from "../components/CheckoutNav.astro";
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+        <meta name="generator" content={Astro.generator} />
+        <title>Lightning Lessons music school</title>
+    </head>
+    <body class="flex flex-col min-h-screen max-w-screen-xl mx-auto">
+        <div class="m-2">
+            <CheckoutNav />
+        </div>
+        <main class="flex-1 flex flex-col mt-4">
+            <slot />
+        </main>
+        <Footer />
+    </body>
+</html>
