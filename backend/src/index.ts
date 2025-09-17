@@ -58,6 +58,11 @@ app.post("/create-checkout-session", async (context) => {
     // Retrieve the Stripe client from the variable object
     const stripe = context.var.stripe;
 
+    const baseUrl =
+        context.req.header("Host") === "lightninglessons"
+            ? "https://lightninglessons.com"
+            : `http://localhost:4321`;
+
     const session = await stripe.checkout.sessions.create({
         line_items: [
             {
@@ -73,9 +78,7 @@ app.post("/create-checkout-session", async (context) => {
         ],
         mode: "payment",
         ui_mode: "embedded",
-        return_url:
-            // to do: set the return url properly for dev and prod
-            "https://example.com/checkout/return?session_id={CHECKOUT_SESSION_ID}",
+        return_url: `${baseUrl}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
     });
 
     return context.json({ clientSecret: session.client_secret });
@@ -85,14 +88,17 @@ app.get("/session_status", async (context) => {
     // Retrieve the Stripe client from the variable object
     const stripe = context.var.stripe;
 
-    const session = await stripe.checkout.sessions.retrieve(
-        context.req.query.session_id
-    );
+    // nullish coalescing operator to solve typescript error,
+    // probably a better way to do this?
+    const session_id = context.req.query("session_id") ?? "";
 
-    context.json({
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+
+    return context.json({
         status: session.status,
         payment_status: session.payment_status,
         customer_email: session.customer_details?.email,
+        customer_name: session.customer_details?.name,
     });
 });
 

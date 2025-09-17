@@ -1,0 +1,58 @@
+---
+import Layout from "../../layouts/Layout.astro";
+---
+
+<Layout>
+    <div id="loading">
+        <p>Loading...</p>
+    </div>
+    <div id="success" class="mx-auto">
+        <p>Thank you for your purchase <span id="customerName"></span></p>
+        <p>
+            We've sent an email to <span id="customerEmail"></span> with further
+            details
+        </p>
+    </div>
+</Layout>
+
+<script>
+    async function getCheckoutSession() {
+        let params = new URLSearchParams(window.location.search);
+        let session_id = params.get("session_id");
+        const backendUrl = import.meta.env.PUBLIC_API_URL;
+
+        // to do: add try/catch for loading state
+        const response = await fetch(
+            `${backendUrl}/session_status?session_id=${session_id}`
+        );
+        if (!response.ok) {
+            throw new Error(`Response status: ${response.status}`);
+        }
+        const result = await response.json();
+
+        return result;
+    }
+
+    async function handleCheckoutResult() {
+        let loadingEl = document.getElementById("loading");
+        let successEl = document.getElementById("success");
+
+        const session = await getCheckoutSession();
+
+        if (session.status == "open") {
+            window.location.href = "/checkout";
+        } else if (session.status == "complete") {
+            let nameEl = document.getElementById("customerName");
+            let emailEl = document.getElementById("customerEmail");
+
+            loadingEl?.remove();
+
+            const { customer_name, customer_email } = session;
+
+            if (nameEl) nameEl.innerText = customer_name || "songwriter friend";
+            if (emailEl) emailEl.innerText = customer_email || "your email";
+        }
+    }
+
+    handleCheckoutResult();
+</script>
