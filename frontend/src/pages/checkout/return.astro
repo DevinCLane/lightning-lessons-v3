@@ -3,49 +3,71 @@ import Layout from "../../layouts/Layout.astro";
 ---
 
 <Layout>
-    <div id="loading">
+    <div id="loading" class="mx-auto">
         <p>Loading...</p>
     </div>
-    <div id="success" class="mx-auto">
-        <p>Thank you for your purchase <span id="customerName"></span></p>
+    <div id="success" class="mx-auto hidden">
         <p>
-            We've sent an email to <span id="customerEmail"></span> with further
-            details
+            Thank you for your purchase <span
+                id="customerName"
+                class="font-semibold"></span>
+        </p>
+        <p>
+            We've sent an email to <span
+                id="customerEmail"
+                class="font-semibold"></span> with further details
+        </p>
+    </div>
+    <div id="error" class="mx-auto hidden">
+        <p>
+            There was an error. Return to <a
+                href="/checkout"
+                class="font-medium text-blue-600 underline dark:text-blue-500 hover:no-underline"
+                >checkout</a
+            >
         </p>
     </div>
 </Layout>
 
 <script>
     async function getCheckoutSession() {
-        let params = new URLSearchParams(window.location.search);
-        let session_id = params.get("session_id");
+        const loadingEl = document.getElementById("loading");
+        const successEl = document.getElementById("success");
+        const errorEl = document.getElementById("error");
+
+        const params = new URLSearchParams(window.location.search);
+        const session_id = params.get("session_id");
         const backendUrl = import.meta.env.PUBLIC_API_URL;
 
-        // to do: add try/catch for loading state
-        const response = await fetch(
-            `${backendUrl}/session_status?session_id=${session_id}`
-        );
-        if (!response.ok) {
-            throw new Error(`Response status: ${response.status}`);
+        try {
+            // redundant, but make sure loading indicator is shown
+            if (loadingEl) loadingEl.style.display = "block";
+            const response = await fetch(
+                `${backendUrl}/session_status?session_id=${session_id}`
+            );
+            if (!response.ok) {
+                throw new Error(`Response status: ${response.status}`);
+            }
+            const result = await response.json();
+            return result;
+        } catch (error) {
+            if (loadingEl) loadingEl.style.display = "none";
+            if (errorEl) errorEl.style.display = "block";
+            console.error(error);
+        } finally {
+            if (loadingEl) loadingEl.style.display = "none";
+            if (successEl) successEl.style.display = "block";
         }
-        const result = await response.json();
-
-        return result;
     }
 
     async function handleCheckoutResult() {
-        let loadingEl = document.getElementById("loading");
-        let successEl = document.getElementById("success");
-
         const session = await getCheckoutSession();
 
         if (session.status == "open") {
             window.location.href = "/checkout";
         } else if (session.status == "complete") {
-            let nameEl = document.getElementById("customerName");
-            let emailEl = document.getElementById("customerEmail");
-
-            loadingEl?.remove();
+            const nameEl = document.getElementById("customerName");
+            const emailEl = document.getElementById("customerEmail");
 
             const { customer_name, customer_email } = session;
 
