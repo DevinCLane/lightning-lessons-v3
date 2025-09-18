@@ -10,12 +10,13 @@ import Layout from "../../layouts/Layout.astro";
         <p>
             Thank you for your purchase <span
                 id="customerName"
-                class="font-semibold"></span>
+                class="font-semibold"></span>. We're excited to have you in the
+            class 🎉
         </p>
         <p>
             We've sent an email to <span
                 id="customerEmail"
-                class="font-semibold"></span> with further details
+                class="font-semibold"></span> with further details.
         </p>
     </div>
     <div id="error" class="mx-auto hidden">
@@ -31,33 +32,30 @@ import Layout from "../../layouts/Layout.astro";
 
 <script>
     async function getCheckoutSession() {
-        const loadingEl = document.getElementById("loading");
-        const successEl = document.getElementById("success");
-        const errorEl = document.getElementById("error");
+        const loadingEl = document.getElementById("loading")!;
+        const successEl = document.getElementById("success")!;
+        const errorEl = document.getElementById("error")!;
 
         const params = new URLSearchParams(window.location.search);
         const session_id = params.get("session_id");
         const backendUrl = import.meta.env.PUBLIC_API_URL;
 
+        let result;
         try {
-            // redundant, but make sure loading indicator is shown
-            if (loadingEl) loadingEl.style.display = "block";
             const response = await fetch(
                 `${backendUrl}/session_status?session_id=${session_id}`
             );
-            if (!response.ok) {
-                throw new Error(`Response status: ${response.status}`);
-            }
-            const result = await response.json();
-            return result;
+            result = await response.json();
         } catch (error) {
-            if (loadingEl) loadingEl.style.display = "none";
-            if (errorEl) errorEl.style.display = "block";
+            loadingEl.style.display = "none";
+            errorEl.style.display = "block";
             console.error(error);
-        } finally {
-            if (loadingEl) loadingEl.style.display = "none";
-            if (successEl) successEl.style.display = "block";
+            return;
         }
+
+        loadingEl.style.display = "none";
+        successEl.style.display = "block";
+        return result;
     }
 
     async function handleCheckoutResult() {
@@ -65,14 +63,18 @@ import Layout from "../../layouts/Layout.astro";
 
         if (session.status == "open") {
             window.location.href = "/checkout";
-        } else if (session.status == "complete") {
-            const nameEl = document.getElementById("customerName");
-            const emailEl = document.getElementById("customerEmail");
+            return;
+        }
+
+        if (session.status == "complete") {
+            const nameEl = document.getElementById("customerName")!;
+            const emailEl = document.getElementById("customerEmail")!;
 
             const { customer_name, customer_email } = session;
 
-            if (nameEl) nameEl.innerText = customer_name || "songwriter friend";
-            if (emailEl) emailEl.innerText = customer_email || "your email";
+            nameEl.innerText = customer_name || "songwriter friend";
+            emailEl.innerText = customer_email || "your email";
+            return;
         }
     }
 
