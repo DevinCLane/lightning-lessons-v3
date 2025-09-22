@@ -66,19 +66,30 @@ app.post("/create-checkout-session", async (context) => {
     const session = await stripe.checkout.sessions.create({
         line_items: [
             {
-                price_data: {
-                    currency: "usd",
-                    product_data: {
-                        name: "T-shirt",
-                    },
-                    unit_amount: 2000,
-                },
+                price: "price_1S8TZdKexSyx8640CMuVHFt8",
                 quantity: 1,
             },
         ],
         mode: "payment",
         ui_mode: "embedded",
         return_url: `${baseUrl}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
+        payment_intent_data: {
+            description: `Thanks for joining the class. Here are the instructions:
+            https://us06web.zoom.us/j/86946272214?pwd=eYmMoKA1coirS1tBH1X9qqhHVNs5k7.1
+
+            Meeting ID: 869 4627 2214
+            Passcode: 464997
+
+            ---
+
+            One tap mobile
+            +16694449171,,86946272214#,,,,*464997# US
+            +16699006833,,86946272214#,,,,*464997# US (San Jose)
+
+            Join instructions
+            https://us06web.zoom.us/meetings/86946272214/invitations?signature=DHWc0WqBGbHuiRRXbx2r5yQkVMR1WngUNiNnW7H9ROU
+            `,
+        },
     });
 
     return context.json({ clientSecret: session.client_secret });

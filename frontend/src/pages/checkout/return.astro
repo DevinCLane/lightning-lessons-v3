@@ -31,9 +31,10 @@ import Layout from "../../layouts/Layout.astro";
 </Layout>
 
 <script>
+    const loadingEl = document.getElementById("loading")!;
+    const successEl = document.getElementById("success")!;
+
     async function getCheckoutSession() {
-        const loadingEl = document.getElementById("loading")!;
-        const successEl = document.getElementById("success")!;
         const errorEl = document.getElementById("error")!;
 
         const params = new URLSearchParams(window.location.search);
@@ -53,8 +54,6 @@ import Layout from "../../layouts/Layout.astro";
             return;
         }
 
-        loadingEl.style.display = "none";
-        successEl.style.display = "block";
         return result;
     }
 
@@ -67,6 +66,9 @@ import Layout from "../../layouts/Layout.astro";
         }
 
         if (session.status == "complete") {
+            loadingEl.style.display = "none";
+            successEl.style.display = "block";
+
             const nameEl = document.getElementById("customerName")!;
             const emailEl = document.getElementById("customerEmail")!;
 
