@@ -63,10 +63,21 @@ app.post("/create-checkout-session", async (context) => {
             ? "https://lightninglessons.com"
             : `http://localhost:4321`;
 
+    // retrieve the priceId from .env (this might need to be refactored to the Hono / typescript way)
+    const priceId = process.env.PRICE_ID;
+    // expand the product details
+    const price = await stripe.prices.retrieve(priceId, {
+        expand: ["product"],
+    });
+
+    const product = price.product;
+    // typescript doesn't like this
+    const zoomLink = product.metadata.zoom_link || "no zoom link found";
+
     const session = await stripe.checkout.sessions.create({
         line_items: [
             {
-                price: "price_1S8TZdKexSyx8640CMuVHFt8",
+                price: priceId,
                 quantity: 1,
             },
         ],
@@ -74,20 +85,7 @@ app.post("/create-checkout-session", async (context) => {
         ui_mode: "embedded",
         return_url: `${baseUrl}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
         payment_intent_data: {
-            description: `Thanks for joining the class. Here are the instructions:
-            https://us06web.zoom.us/j/86946272214?pwd=eYmMoKA1coirS1tBH1X9qqhHVNs5k7.1
-
-            Meeting ID: 869 4627 2214
-            Passcode: 464997
-
-            ---
-
-            One tap mobile
-            +16694449171,,86946272214#,,,,*464997# US
-            +16699006833,,86946272214#,,,,*464997# US (San Jose)
-
-            Join instructions
-            https://us06web.zoom.us/meetings/86946272214/invitations?signature=DHWc0WqBGbHuiRRXbx2r5yQkVMR1WngUNiNnW7H9ROU
+            description: `Thanks for joining the class. Here are is the zoom link: ${zoomLink}
             `,
         },
     });
