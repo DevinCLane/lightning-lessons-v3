@@ -1,5 +1,5 @@
 ---
-import guitar from "../../images/guitar.jpg";
+import ab from "../../images/ab-avatar.avif";
 import Layout from "../../layouts/Layout.astro";
 import ProductPage from "../../components/ProductPage.astro";
 ---
@@ -8,27 +8,43 @@ import ProductPage from "../../components/ProductPage.astro";
     <ProductPage
         title="Write a song using music theory"
         price="200"
-        image={guitar}
+        image={ab}
         imageAlt="Card Image"
         link="/checkout"
         linkText="Sign up"
     >
         <Fragment slot="content">
+            <!-- to do: extract this out to a markdown file? -->
+            <!-- so that every class could just be made with a new markdown file -->
             <!-- detailed product description -->
             <div class="mt-6 space-y-4">
                 <h3 class="text-2xl font-semibold">Course details:</h3>
                 <p>
-                    This hands-on course will take you from music theory basics
-                    to writing your own complete song. Perfect for beginners and
-                    experienced songwriters who want to understand the "why"
-                    behind music composition.
+                    Do you want new tricks to help you write songs? Have you
+                    ever listened to a song that burned a hole in your ear and
+                    wondered why? This class is for you.
                 </p>
-                <h3 class="text-2xl font-semibold">What you'll learn:</h3>
+                <p>
+                    In this class, we teach the fundamentals of music theory
+                    that help you distill the techniques from your favorite
+                    artists into concepts that you can use in your own songs.
+                </p>
+                <h3 class="text-2xl font-semibold">
+                    By the end of this class, you will:
+                </h3>
                 <ul class="list-disc list-inside space-y-2">
-                    <li>Basic chord progressions and how they work</li>
-                    <li>Melody writing techniques</li>
-                    <li>Song structure and arrangement</li>
-                    <li>Practical application of music theory concepts</li>
+                    <li>
+                        Understand common compositional tools used in popular
+                        music
+                    </li>
+                    <li>Create a structural map of typical popular songs</li>
+                    <li>
+                        Understand roman numeral representation of chord
+                        progressions (e.g., I IV V, I V vi IV, etc.)
+                    </li>
+                    <li>
+                        Write a song using your new music theory analysis skills
+                    </li>
                 </ul>
                 <h3 class="text-2xl font-semibold">Course Logistics</h3>
                 <ul class="list-disc list-inside space-y-2">
@@ -36,13 +52,14 @@ import ProductPage from "../../components/ProductPage.astro";
                         <strong>Duration:</strong> 4 weeks
                     </li>
                     <li>
+                        <strong>Dates & time:</strong> 12-1pm PT on 10/30, 11/6,
+                        11/13, and 11/20
+                    </li>
+                    <li>
                         <strong>Format:</strong> Weekly live 1 hour classes on Zoom
                     </li>
                     <li>
                         <strong>Prerequisites:</strong> None
-                    </li>
-                    <li>
-                        <strong>Price:</strong> $200
                     </li>
                 </ul>
                 <h3 class="text-2xl font-semibold">
@@ -52,20 +69,29 @@ import ProductPage from "../../components/ProductPage.astro";
                     <li>
                         <strong>What if I can't make a class?</strong>
                         <p>
-                            If you can't make a class, you can still participate
-                            by watching the recording later and working through
-                            the exercises at your own pace. We will have a
-                            Discord community set up as well where you can ask
+                            If you can't attend a class, you can still
+                            participate by watching the recordings and working
+                            through the exercises at your own pace. We will have
+                            a Discord community set up where you can ask
                             questions and get help from other students. Refunds
                             are not given for missed classes.
                         </p>
                     </li>
                     <li>
-                        <strong>What if I'm not a beginner?</strong>
+                        <strong
+                            >What skill level is required to take this class?</strong
+                        >
                         <p>
-                            This course is designed for beginners, but if you're
-                            an experienced songwriter, you can still learn a
-                            lot.
+                            This course is designed for people of all levels to
+                            benefit. For beginners, we try our best to explain
+                            fully explain concepts from the start; for advanced
+                            players, we hope you'll be able to take these
+                            concepts and run even farther with them through the
+                            prompts and accountability of the group.
+                        </p>
+                        <p>
+                            You will get the most out of this class if you know
+                            how to play a few chords on your instrument.
                         </p>
                     </li>
                     <li>
@@ -82,28 +108,4 @@ import ProductPage from "../../components/ProductPage.astro";
     </ProductPage>
 </Layout>
 
-<!-- make a request to the backend to get price data? -->
-<script>
-    async function getProducts() {
-        const errorEl = document.getElementById("error")!;
-
-        const params = new URLSearchParams(window.location.search);
-        const session_id = params.get("session_id");
-        const backendUrl = import.meta.env.PUBLIC_API_URL;
-
-        let result;
-        try {
-            const response = await fetch(
-                `${backendUrl}/session_status?session_id=${session_id}`
-            );
-            result = await response.json();
-        } catch (error) {
-            loadingEl.style.display = "none";
-            errorEl.style.display = "block";
-            console.error(error);
-            return;
-        }
-
-        return result;
-    }
-</script>
+<!-- to do make a request to the backend to get price data? -->
