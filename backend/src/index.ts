@@ -52,6 +52,25 @@ app.get("/", async (context) => {
 });
 
 /**
+ * displays product details and prices for the frontend
+ */
+app.get("/get_products", async (context) => {
+    // Retrieve the Stripe client from the variable object
+    const stripe = context.var.stripe;
+
+    // retrieve the priceId from .env (this might need to be refactored to the Hono / typescript way)
+    const priceId = process.env.PRICE_ID;
+    // expand the product details
+    const price = await stripe.prices.retrieve(priceId, {
+        expand: ["product"],
+    });
+
+    const product = price.product;
+
+    return context.json({ product: product });
+});
+
+/**
  * creates a Stripe checkout session and returns the client secret
  */
 app.post("/create-checkout-session", async (context) => {
@@ -64,7 +83,7 @@ app.post("/create-checkout-session", async (context) => {
             : `http://localhost:4321`;
 
     // retrieve the priceId from .env (this might need to be refactored to the Hono / typescript way)
-    const priceId = process.env.PRICE_ID;
+    const priceId = process.env.PRICE_ID ?? "price id not found";
     // expand the product details
     const price = await stripe.prices.retrieve(priceId, {
         expand: ["product"],
@@ -85,8 +104,7 @@ app.post("/create-checkout-session", async (context) => {
         ui_mode: "embedded",
         return_url: `${baseUrl}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
         payment_intent_data: {
-            description: `Thanks for joining the class. Here are is the zoom link: ${zoomLink}
-            `,
+            description: `Thanks for joining the class. Here is the zoom link: ${zoomLink}`,
         },
     });
 

@@ -6,14 +6,13 @@ import ProductPage from "../../components/ProductPage.astro";
 
 <Layout>
     <ProductPage
-    title="Write a song using music theory"
-    price="200"
-    image={guitar}
-    imageAlt="Card Image"
-    link="https://buy.stripe.com/8x26oIb7seZPfvj4qe8bS00"
-    linkText="Sign up"
+        title="Write a song using music theory"
+        price="200"
+        image={guitar}
+        imageAlt="Card Image"
+        link="/checkout"
+        linkText="Sign up"
     >
-    
         <Fragment slot="content">
             <!-- detailed product description -->
             <div class="mt-6 space-y-4">
@@ -82,3 +81,29 @@ import ProductPage from "../../components/ProductPage.astro";
         </Fragment>
     </ProductPage>
 </Layout>
+
+<!-- make a request to the backend to get price data? -->
+<script>
+    async function getProducts() {
+        const errorEl = document.getElementById("error")!;
+
+        const params = new URLSearchParams(window.location.search);
+        const session_id = params.get("session_id");
+        const backendUrl = import.meta.env.PUBLIC_API_URL;
+
+        let result;
+        try {
+            const response = await fetch(
+                `${backendUrl}/session_status?session_id=${session_id}`
+            );
+            result = await response.json();
+        } catch (error) {
+            loadingEl.style.display = "none";
+            errorEl.style.display = "block";
+            console.error(error);
+            return;
+        }
+
+        return result;
+    }
+</script>
