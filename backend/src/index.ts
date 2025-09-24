@@ -1,7 +1,6 @@
 import { serve } from "@hono/node-server";
 import { Hono } from "hono";
 import { neon } from "@neondatabase/serverless";
-import { env } from "hono/adapter";
 import { cors } from "hono/cors";
 import Stripe from "stripe";
 
@@ -18,10 +17,11 @@ app.use("*", cors());
  * Setup Stripe SDK prior to handling a request
  */
 app.use("*", async (context, next) => {
-    // Load the Stripe API key from context.
-    const { STRIPE_SECRET_KEY } = env<{
-        STRIPE_SECRET_KEY: string;
-    }>(context);
+    const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY;
+
+    if (!STRIPE_SECRET_KEY) {
+        throw new Error("STRIPE_SECRET_KEY environment variable is required");
+    }
 
     // Instantiate the Stripe client object
     const stripe = new Stripe(STRIPE_SECRET_KEY, {
@@ -40,7 +40,14 @@ app.use("*", async (context, next) => {
  * setup database (should this move to the middleware for stripe setup or be its own middleware?)
  */
 app.get("/", async (context) => {
-    const { DATABASE_URL } = env<{ DATABASE_URL: string }>(context);
+    const DATABASE_URL = process.env.DATABASE_URL;
+    if (!DATABASE_URL) {
+        return context.text(
+            "DATABASE_URL environment variable is required",
+            500
+        );
+    }
+
     try {
         const sql = neon(DATABASE_URL);
         const response = await sql`SELECT version()`;
@@ -60,6 +67,11 @@ app.get("/get_products", async (context) => {
 
     // retrieve the priceId from .env (this might need to be refactored to the Hono / typescript way)
     const priceId = process.env.PRICE_ID;
+
+    if (!priceId) {
+        throw new Error("PRICE_ID environment variable is required");
+    }
+
     // expand the product details
     const price = await stripe.prices.retrieve(priceId, {
         expand: ["product"],
@@ -82,15 +94,20 @@ app.post("/create-checkout-session", async (context) => {
             ? "https://lightninglessons.com"
             : `http://localhost:4321`;
 
-    // retrieve the priceId from .env (this might need to be refactored to the Hono / typescript way)
-    const priceId = process.env.PRICE_ID ?? "price id not found";
+    const priceId = process.env.PRICE_ID;
+
+    if (!priceId) {
+        throw new Error("STRIPE_SECRET_KEY environment variable is required");
+    }
     // expand the product details
     const price = await stripe.prices.retrieve(priceId, {
         expand: ["product"],
     });
 
-    const product = price.product;
-    // typescript doesn't like this
+    // is this dangerous?
+    // price.product could be a string, Product object, or DeletedProduct
+    // should i say if price.product is object, not null, and "metadata" in price.product?
+    const product = price.product as Stripe.Product;
     const zoomLink = product.metadata.zoom_link || "no zoom link found";
 
     const session = await stripe.checkout.sessions.create({
