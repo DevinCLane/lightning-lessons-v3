@@ -7,6 +7,8 @@ import CheckoutLayout from "../../layouts/CheckoutLayout.astro";
 </CheckoutLayout>
 
 <script>
+    const backendUrl = import.meta.env.PUBLIC_API_URL;
+
     import { loadStripe } from "@stripe/stripe-js";
     const stripe = await loadStripe(
         import.meta.env.PUBLIC_STRIPE_PUBLISHABLE_KEY
@@ -18,7 +20,8 @@ import CheckoutLayout from "../../layouts/CheckoutLayout.astro";
     async function initialize() {
         const fetchClientSecret = async () => {
             const response = await fetch(
-                "http://localhost:8080/create-checkout-session",
+                // replace with production URL
+                `${backendUrl}/create-checkout-session`,
                 {
                     method: "POST",
                 }

@@ -1,24 +1,14 @@
 # Frontend app
 
--   Astro:
+## Set up
 
-```text
-├── public/
+-   `.env`: set your **public** Stripe API in **PUBLIC_STRIPE_PUBLISHABLE_KEY**
+-   `.env.development`: set the URL/port of your local backend server in **PUBLIC_API_URL** (likely http://localhost:8080)
+-   `.env.production`: set the URL of your deployed production backend server
 
-│   └── favicon.svg
-├── src
-│   ├── assets
-│   │   └── astro.svg
-│   ├── components
-│   │   └── Welcome.astro
-│   ├── layouts
-│   │   └── Layout.astro
-│   └── pages
-│       └── index.astro
-└── package.json
-```
+    -   The reason for doing this is so that you can easily change backend production environments withou needing to remember where it's referenced in the code.
 
-To learn more about the folder structure of an Astro project, refer to [our guide on project structure](https://docs.astro.build/en/basics/project-structure/).
+-   Don't forget to set the environment variables in your production environment (such as Netlify)
 
 ## 🧞 Commands
 
