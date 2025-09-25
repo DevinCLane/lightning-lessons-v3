@@ -20,7 +20,6 @@ import CheckoutLayout from "../../layouts/CheckoutLayout.astro";
     async function initialize() {
         const fetchClientSecret = async () => {
             const response = await fetch(
-                // replace with production URL
                 `${backendUrl}/create-checkout-session`,
                 {
                     method: "POST",

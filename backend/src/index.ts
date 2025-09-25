@@ -97,7 +97,7 @@ app.post("/create-checkout-session", async (context) => {
     const priceId = process.env.PRICE_ID;
 
     if (!priceId) {
-        throw new Error("STRIPE_SECRET_KEY environment variable is required");
+        throw new Error("PRICE_ID environment variable is required");
     }
     // expand the product details
     const price = await stripe.prices.retrieve(priceId, {
