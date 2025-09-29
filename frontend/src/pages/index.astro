@@ -1,9 +1,23 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import HeroCentered from "../components/HeroCentered.astro";
+import Alert from "../components/Alert.astro";
 ---
 
 <Layout>
+    <div class="m-2">
+        <Alert>
+            <p>
+                <a
+                    href="/classes/write-a-song-using-music-theory"
+                    class="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                >
+                    Registration for our first group workshop is live 🎉! Sign
+                    up for our class that runs October-November 2025.
+                </a>
+            </p>
+        </Alert>
+    </div>
     <HeroCentered
         class="p-10"
         title="Write songs, express yourself"
