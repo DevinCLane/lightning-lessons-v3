@@ -1,10 +1,10 @@
 ---
 import ab from "../../images/ab-avatar.avif";
-import Layout from "../../layouts/Layout.astro";
 import ProductPage from "../../components/ProductPage.astro";
+import CheckoutLayout from "../../layouts/CheckoutLayout.astro";
 ---
 
-<Layout>
+<CheckoutLayout>
     <ProductPage
         title="Write a song using music theory"
         price="200"
@@ -114,6 +114,6 @@ import ProductPage from "../../components/ProductPage.astro";
             </div>
         </Fragment>
     </ProductPage>
-</Layout>
+</CheckoutLayout>
 
 <!-- to do make a request to the backend to get price data? -->
