@@ -27,5 +27,10 @@ const finalLinkText = linkText ?? "Sign up";
             <h2 class="text-4xl font-bold">{title}</h2>
             <p class="text-xl">{description}</p>
         </slot>
+        <a href={finalLink}
+            ><button class="btn btn-primary btn-lg btn-wide"
+                >{finalLinkText}</button
+            ></a
+        >
     </div>
 </section>
