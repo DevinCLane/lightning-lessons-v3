@@ -117,6 +117,7 @@ app.post("/create-checkout-session", async (context) => {
                 quantity: 1,
             },
         ],
+        allow_promotion_codes: true,
         mode: "payment",
         ui_mode: "embedded",
         return_url: `${baseUrl}/checkout/return?session_id={CHECKOUT_SESSION_ID}`,
