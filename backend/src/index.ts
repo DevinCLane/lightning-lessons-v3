@@ -3,11 +3,17 @@ import { Hono } from "hono";
 import { neon } from "@neondatabase/serverless";
 import { cors } from "hono/cors";
 import Stripe from "stripe";
+import * as z from "zod";
+import { zValidator } from "@hono/zod-validator";
 
 type Variables = {
     // stripe client
     stripe: Stripe;
 };
+
+const subscribeSchema = z.object({
+    email: z.string().email("Invalid email format"),
+});
 
 const app = new Hono<{ Variables: Variables }>();
 
@@ -129,6 +135,9 @@ app.post("/create-checkout-session", async (context) => {
     return context.json({ clientSecret: session.client_secret });
 });
 
+/**
+ * gets the stripe session status
+ */
 app.get("/session_status", async (context) => {
     // Retrieve the Stripe client from the variable object
     const stripe = context.var.stripe;
@@ -145,6 +154,25 @@ app.get("/session_status", async (context) => {
         customer_email: session.customer_details?.email,
         customer_name: session.customer_details?.name,
     });
+});
+
+/**
+ * email newsletter signup
+ */
+
+app.post("/subscribe", zValidator("form", subscribeSchema), async (context) => {
+    const baseUrl =
+        context.req.header("Host") === "lightninglessons"
+            ? "https://lightninglessons.com"
+            : `http://localhost:4321`;
+
+    const { email } = context.req.valid("form");
+    console.log("successful email received:", email);
+
+    // to do: save email to database
+    // to do: add Resend audience contact
+
+    return context.redirect(`${baseUrl}/email-signup/return`);
 });
 
 serve(

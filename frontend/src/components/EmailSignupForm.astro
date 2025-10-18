@@ -1,12 +1,13 @@
 ---
-
+const formUrl = import.meta.env.PUBLIC_API_URL + "/subscribe";
 ---
 
-<h1 class="text-xl mb-6">Sign up to hear about new classes</h1>
-<form>
-    <div class="join">
+<h1 class="text-xl mt-3 mb-6">Sign up to hear about new classes</h1>
+<div class="join">
+    <form id="emailForm" action={formUrl} method="post">
         <div>
-            <label class="input validator join-item">
+            <label class="input validator join-item md:w-80">
+                <!-- email icon -->
                 <svg
                     class="h-[1em] opacity-50"
                     xmlns="http://www.w3.org/2000/svg"
@@ -24,10 +25,17 @@
                         ></path>
                     </g>
                 </svg>
-                <input type="email" placeholder="musician@cool.com" required />
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="musician@cool.com"
+                    required
+                />
             </label>
-            <div class="validator-hint hidden">Enter valid email address</div>
+            <div class="validator-hint hidden">
+                Please enter valid email address
+            </div>
         </div>
         <button class="btn btn-primary join-item">Sign up</button>
-    </div>
-</form>
+    </form>
+</div>
