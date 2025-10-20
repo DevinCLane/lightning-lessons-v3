@@ -3,6 +3,7 @@ import { Hono } from "hono";
 import { neon } from "@neondatabase/serverless";
 import { cors } from "hono/cors";
 import Stripe from "stripe";
+import { zValidator } from "@hono/zod-validator";
 
 type Variables = {
     // stripe client
@@ -146,6 +147,28 @@ app.get("/session_status", async (context) => {
         customer_name: session.customer_details?.name,
     });
 });
+
+/**
+ * email newsletter signup
+ */
+app.post(
+    "/mutual-referrer",
+    zValidator("form", subscribeSchema),
+    async (context) => {
+        const baseUrl =
+            context.req.header("Host") === "lightninglessons"
+                ? "https://lightninglessons.com"
+                : `http://localhost:4321`;
+
+        const { email } = context.req.valid("form");
+        console.log("successful email received:", email);
+
+        // to do: save email to database
+        // to do: add Resend audience contact
+
+        return context.redirect(`${baseUrl}/email-signup/return`);
+    }
+);
 
 serve(
     {
