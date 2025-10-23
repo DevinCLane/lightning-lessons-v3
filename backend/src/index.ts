@@ -3,14 +3,26 @@ import { Hono } from "hono";
 import { neon } from "@neondatabase/serverless";
 import { cors } from "hono/cors";
 import Stripe from "stripe";
+import * as z from "zod";
 import { zValidator } from "@hono/zod-validator";
+import { Resend } from "resend";
 
 type Variables = {
     // stripe client
     stripe: Stripe;
 };
 
+const referrerSchema = z.object({
+    firstName1: z.string().nonempty(),
+    lastName1: z.string().nonempty(),
+    email1: z.email("Invalid email format"),
+    firstName2: z.string().nonempty(),
+    lastName2: z.string().nonempty(),
+    email2: z.email("Invalid email format"),
+});
+
 const app = new Hono<{ Variables: Variables }>();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use("*", cors());
 
@@ -149,22 +161,116 @@ app.get("/session_status", async (context) => {
 });
 
 /**
- * email newsletter signup
+ * Mutual referrer discount
+ * Receives two customers names and email from the frontend form
+ * Then creates promotion codes specific to those customers
  */
 app.post(
     "/mutual-referrer",
-    zValidator("form", subscribeSchema),
+    zValidator("form", referrerSchema),
     async (context) => {
+        // Retrieve the Stripe client from the variable object
+        const stripe = context.var.stripe;
+
         const baseUrl =
             context.req.header("Host") === "lightninglessons"
                 ? "https://lightninglessons.com"
                 : `http://localhost:4321`;
 
-        const { email } = context.req.valid("form");
-        console.log("successful email received:", email);
+        const { firstName1, lastName1, email1, firstName2, lastName2, email2 } =
+            context.req.valid("form");
+        console.log("successful form submission received");
 
-        // to do: save email to database
-        // to do: add Resend audience contact
+        // create Stripe customers for each person
+        const customer1 = await stripe.customers.create({
+            name: `${firstName1} ${lastName1}`,
+            email: email1,
+        });
+        const customer2 = await stripe.customers.create({
+            name: `${firstName2} ${lastName2}`,
+            email: email2,
+        });
+
+        // create the promotion codes for each person
+        // to do: how can I make this promo code work only for the upcoming class? Create a coupon just for this product
+        // to do: do I want to set a time limit on this?
+        // to do: restrict the promo code to this specific customer,
+        // ...this requries authentication, or a form where the user submits their email, which is tied to the Stripe customer ID
+        // ...which gets passed to the checkout session before the checkout session is created.'
+        const uuidBase = crypto.randomUUID().toUpperCase();
+        const uuid1 = uuidBase.slice(0, 8);
+        const uuid2 = uuidBase.slice(-8);
+        const promotionCode1 = await stripe.promotionCodes.create({
+            coupon: `${process.env.STRIPE_COUPON_CODE}`,
+            code: `${firstName1.toUpperCase()}${uuid1}`,
+            max_redemptions: 1,
+            // to do: keep this inactive until the referred customer purchases their class
+        });
+        const promotionCode2 = await stripe.promotionCodes.create({
+            coupon: `${process.env.STRIPE_COUPON_CODE}`,
+            code: `${firstName2.toUpperCase()}${uuid2}`,
+            max_redemptions: 1,
+        });
+
+        const { data, error } = await resend.batch.send([
+            {
+                from: "Acme <onboarding@resend.dev>",
+                to: ["delivered+user1@resend.dev"],
+                subject: "⚡️ Your Lightning Lessons promo code",
+                html: `<html>
+            <head>
+                <meta charset="UTF-8" />
+                <title>⚡️ Lightning Lessons Promo Code</title>
+            </head>
+            <body>
+                <div>
+                    <p>Hello ${firstName1}</p>
+                    <p>
+                        Your 15% off promo code is <b>${promotionCode1.code}</b>
+                    </p>
+                    <p>
+                        This code is only valid for 1 use, so don't share it
+                        with anyone else 😊.
+                    </p>
+                    <p>See you in class!</p>
+                    <small>Didn't want this email? Reply "stop" to unsubscribe</small>
+                </div>
+            </body>
+        </html>`,
+            },
+            {
+                from: "Acme <onboarding@resend.dev>",
+                to: ["delivered+user2@resend.dev"],
+                subject: "⚡️ Your Lightning Lessons promo code",
+                html: `<html>
+            <head>
+                <meta charset="UTF-8" />
+                <title>⚡️ Lightning Lessons Promo Code</title>
+            </head>
+            <body>
+                <div>
+                    <p>Hello ${firstName2}</p>
+                    <p>
+                        Your 15% off promo code is <b>${promotionCode2.code}</b>
+                    </p>
+                    <p>
+                        This code is only valid for 1 use, so don't share it
+                        with anyone else 😊.
+                    </p>
+                    <p>See you in class!</p>
+                    <small>Didn't want this email? Reply "stop" to unsubscribe</small>
+                </div>
+            </body>
+        </html>`,
+            },
+        ]);
+
+        if (error) return context.json(error, 400);
+
+        // to do: save user to database
+        // do i want to register that they created a promo code?
+
+        // to do: return them to a success page
 
         return context.redirect(`${baseUrl}/email-signup/return`);
     }
