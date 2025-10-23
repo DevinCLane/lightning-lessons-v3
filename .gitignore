@@ -1,5 +1,6 @@
 node_modules
 .env
+.env.development
 pnpm-lock.yaml
 .DS_Store
 dist

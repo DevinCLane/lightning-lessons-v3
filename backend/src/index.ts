@@ -102,10 +102,7 @@ app.post("/create-checkout-session", async (context) => {
     // Retrieve the Stripe client from the variable object
     const stripe = context.var.stripe;
 
-    const baseUrl =
-        context.req.header("Host") === "lightninglessons"
-            ? "https://lightninglessons.com"
-            : `http://localhost:4321`;
+    const baseUrl = process.env.BASE_URL ?? "http://localhost:4321";
 
     const priceId = process.env.PRICE_ID;
 
@@ -172,10 +169,7 @@ app.post(
         // Retrieve the Stripe client from the variable object
         const stripe = context.var.stripe;
 
-        const baseUrl =
-            context.req.header("Host") === "lightninglessons"
-                ? "https://lightninglessons.com"
-                : `http://localhost:4321`;
+        const baseUrl = process.env.BASE_URL ?? "http://localhost:4321";
 
         const { firstName1, lastName1, email1, firstName2, lastName2, email2 } =
             context.req.valid("form");
