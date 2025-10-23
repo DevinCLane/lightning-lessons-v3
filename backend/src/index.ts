@@ -214,8 +214,8 @@ app.post(
 
         const { data, error } = await resend.batch.send([
             {
-                from: "Acme <onboarding@resend.dev>",
-                to: ["delivered+user1@resend.dev"],
+                from: "Devin <mutualreferrer@notifications.lightninglessons.com>",
+                to: [email1],
                 subject: "⚡️ Your Lightning Lessons promo code",
                 html: `<html>
             <head>
@@ -239,8 +239,8 @@ app.post(
         </html>`,
             },
             {
-                from: "Acme <onboarding@resend.dev>",
-                to: ["delivered+user2@resend.dev"],
+                from: "<mutualreferrer@notifications.lightninglessons.com>",
+                to: [email2],
                 subject: "⚡️ Your Lightning Lessons promo code",
                 html: `<html>
             <head>
