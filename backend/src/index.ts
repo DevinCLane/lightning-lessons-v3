@@ -102,6 +102,8 @@ app.post("/create-checkout-session", async (context) => {
     // Retrieve the Stripe client from the variable object
     const stripe = context.var.stripe;
 
+    // this needs to be fixed so that it redirects to lightninglessons.com in prod
+    // ...and localhost in dev
     const baseUrl = process.env.BASE_URL ?? "http://localhost:4321";
 
     const priceId = process.env.PRICE_ID;
@@ -176,11 +178,11 @@ app.post(
         console.log("successful form submission received");
 
         // create Stripe customers for each person
-        const customer1 = await stripe.customers.create({
+        await stripe.customers.create({
             name: `${firstName1} ${lastName1}`,
             email: email1,
         });
-        const customer2 = await stripe.customers.create({
+        await stripe.customers.create({
             name: `${firstName2} ${lastName2}`,
             email: email2,
         });
