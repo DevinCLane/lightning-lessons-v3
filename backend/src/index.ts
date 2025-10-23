@@ -232,6 +232,9 @@ app.post(
                         This code is only valid for 1 use, so don't share it
                         with anyone else 😊.
                     </p>
+                    <p>
+                        <a href="https://lightninglessons.com/classes/write-a-song-using-music-theory/">Sign up here</a>
+                    </p>
                     <p>See you in class!</p>
                     <small>Didn't want this email? Reply "stop" to unsubscribe</small>
                 </div>
@@ -239,7 +242,7 @@ app.post(
         </html>`,
             },
             {
-                from: "<mutualreferrer@notifications.lightninglessons.com>",
+                from: "Devin <mutualreferrer@notifications.lightninglessons.com>",
                 to: [email2],
                 subject: "⚡️ Your Lightning Lessons promo code",
                 html: `<html>
@@ -257,6 +260,9 @@ app.post(
                         This code is only valid for 1 use, so don't share it
                         with anyone else 😊.
                     </p>
+                    <p>
+                        <a href="https://lightninglessons.com/classes/write-a-song-using-music-theory/">Sign up here</a>
+                    </p>
                     <p>See you in class!</p>
                     <small>Didn't want this email? Reply "stop" to unsubscribe</small>
                 </div>
@@ -272,7 +278,7 @@ app.post(
 
         // to do: return them to a success page
 
-        return context.redirect(`${baseUrl}/email-signup/return`);
+        return context.redirect(`${baseUrl}/mutual-referrer/return`);
     }
 );
 
