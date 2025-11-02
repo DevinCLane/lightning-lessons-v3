@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import * as z from "zod";
 import { zValidator } from "@hono/zod-validator";
 import { Resend } from "resend";
+import type { HttpBindings } from "@hono/node-server";
 
 type Variables = {
     // stripe client
@@ -21,7 +22,7 @@ const referrerSchema = z.object({
     email2: z.email("Invalid email format"),
 });
 
-const app = new Hono<{ Variables: Variables }>();
+const app = new Hono<{ Variables: Variables; Bindings: HttpBindings }>();
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 app.use("*", cors());
@@ -171,11 +172,15 @@ app.post(
         // Retrieve the Stripe client from the variable object
         const stripe = context.var.stripe;
 
+        const httpVersion = context.env.incoming.httpVersion;
+        if (httpVersion === "0.9" || httpVersion === "1.0") {
+            return context.text("Unsupported HTTP version", 400);
+        }
+
         const baseUrl = process.env.BASE_URL ?? "http://localhost:4321";
 
         const { firstName1, lastName1, email1, firstName2, lastName2, email2 } =
             context.req.valid("form");
-        console.log("successful form submission received");
 
         // create Stripe customers for each person
         await stripe.customers.create({
