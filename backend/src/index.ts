@@ -20,6 +20,7 @@ const referrerSchema = z.object({
     firstName2: z.string().nonempty(),
     lastName2: z.string().nonempty(),
     email2: z.email("Invalid email format"),
+    phone1: z.string().optional(),
 });
 
 const app = new Hono<{ Variables: Variables; Bindings: HttpBindings }>();
@@ -179,8 +180,20 @@ app.post(
 
         const baseUrl = process.env.BASE_URL ?? "http://localhost:4321";
 
-        const { firstName1, lastName1, email1, firstName2, lastName2, email2 } =
-            context.req.valid("form");
+        const {
+            firstName1,
+            lastName1,
+            email1,
+            firstName2,
+            lastName2,
+            email2,
+            phone1,
+        } = context.req.valid("form");
+
+        // honeypot spam thwarting
+        if (phone1) {
+            return context.text("invalid submission", 400);
+        }
 
         // create Stripe customers for each person
         await stripe.customers.create({

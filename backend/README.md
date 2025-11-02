@@ -11,6 +11,8 @@ open http://localhost:8080
 
 ### Deploy
 
+back sure you are in the /backend folder and not the root and then:
+
 ```
 gcloud run deploy my-app --source . --allow-unauthenticated --env-vars-file=.env
 ```

@@ -33,6 +33,18 @@ const formUrl = import.meta.env.PUBLIC_API_URL + "/mutual-referrer#";
                 placeholder="Email"
                 name="email1"
             />
+            <div style="position: absolute; left: -9999px; opacity: 0;">
+                <label class="label">Phone number</label>
+                <input
+                    aria-hidden="true"
+                    type="tel"
+                    class="input rounded"
+                    placeholder="Phone number"
+                    name="phone1"
+                    tabindex="-1"
+                    autocomplete="off"
+                />
+            </div>
 
             <h2 class="mt-4">Your friends' details</h2>
             <label class="label">First name</label>
