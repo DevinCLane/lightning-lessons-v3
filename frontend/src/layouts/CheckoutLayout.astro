@@ -2,6 +2,7 @@
 import "../styles/app.css";
 import Footer from "../components/Footer.astro";
 import CheckoutNav from "../components/CheckoutNav.astro";
+import Posthog from "../components/posthog.astro";
 ---
 
 <!doctype html>
@@ -11,6 +12,9 @@ import CheckoutNav from "../components/CheckoutNav.astro";
         <meta name="viewport" content="width=device-width" />
         <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
         <meta name="generator" content={Astro.generator} />
+
+        <!-- Posthog -->
+        <Posthog />
 
         <!-- HTML Meta Tags -->
         <title>Lightning Lessons music school</title>
