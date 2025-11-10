@@ -1,0 +1,76 @@
+---
+const formUrl = import.meta.env.PUBLIC_API_URL + "/mutual-referrer#";
+---
+
+<h1 class="text-2xl mt-3 mb-6">Refer your friends 👯‍♀️</h1>
+<p>Sign up with a friend and you both get 15% off</p>
+<div class="join mt-6">
+    <form id="mutualReferrer" action={formUrl} method="post">
+        <fieldset
+            class="fieldset bg-base-200 border-base-300 rounded-box w-xs border p-4"
+        >
+            <!-- <legend class="fieldset-legend">Referral Form</legend> -->
+            <h2>Your details</h2>
+            <label class="label">First name</label>
+            <input
+                type="text"
+                class="input rounded"
+                placeholder="First name"
+                name="firstName1"
+            />
+            <label class="label">Last name</label>
+            <input
+                type="text"
+                class="input rounded"
+                placeholder="Last name"
+                name="lastName1"
+            />
+
+            <label class="label">Email</label>
+            <input
+                type="email"
+                class="input rounded"
+                placeholder="Email"
+                name="email1"
+            />
+            <div style="position: absolute; left: -9999px; opacity: 0;">
+                <label class="label">Phone number</label>
+                <input
+                    aria-hidden="true"
+                    type="tel"
+                    class="input rounded"
+                    placeholder="Phone number"
+                    name="phone1"
+                    tabindex="-1"
+                    autocomplete="off"
+                />
+            </div>
+
+            <h2 class="mt-4">Your friends' details</h2>
+            <label class="label">First name</label>
+            <input
+                type="text"
+                class="input rounded"
+                placeholder="First name"
+                name="firstName2"
+            />
+            <label class="label">Last name</label>
+            <input
+                type="text"
+                class="input rounded"
+                placeholder="Last name"
+                name="lastName2"
+            />
+
+            <label class="label">Email</label>
+            <input
+                type="email"
+                class="input rounded"
+                placeholder="Email"
+                name="email2"
+            />
+
+            <button class="btn btn-primary rounded mt-4">Submit</button>
+        </fieldset>
+    </form>
+</div>

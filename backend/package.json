@@ -2,15 +2,17 @@
     "name": "lightning-lessons-v3-backend",
     "type": "module",
     "scripts": {
-        "dev": "tsx watch --env-file=.env src/index.ts ",
+        "dev": "tsx watch --env-file=.env src/index.ts",
         "build": "tsc",
         "start": "node dist/index.js"
     },
     "dependencies": {
         "@hono/node-server": "^1.19.0",
         "@hono/zod-validator": "^0.7.4",
+        "@hono/zod-validator": "^0.7.4",
         "@neondatabase/serverless": "^1.0.1",
         "hono": "^4.9.4",
+        "resend": "^6.2.0",
         "stripe": "^18.5.0",
         "zod": "^4.1.12"
     },
