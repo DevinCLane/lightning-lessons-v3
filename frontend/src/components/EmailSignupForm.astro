@@ -3,10 +3,10 @@ const formUrl = import.meta.env.PUBLIC_API_URL + "/subscribe";
 ---
 
 <h1 class="text-xl mt-3 mb-6">Sign up to hear about new classes</h1>
-<div class="join">
-    <form id="emailForm" action={formUrl} method="post">
+<form id="emailForm" action={formUrl} method="post">
+    <div class="join">
         <div>
-            <label class="input validator join-item md:w-80">
+            <label class="input validator join-item md:w-70">
                 <!-- email icon -->
                 <svg
                     class="h-[1em] opacity-50"
@@ -36,6 +36,6 @@ const formUrl = import.meta.env.PUBLIC_API_URL + "/subscribe";
                 Please enter valid email address
             </div>
         </div>
-        <button class="btn btn-primary join-item">Sign up</button>
-    </form>
-</div>
+        <button class="btn btn-neutral join-item">Sign up</button>
+    </div>
+</form>

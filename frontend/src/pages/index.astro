@@ -1,6 +1,7 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import HeroCentered from "../components/HeroCentered.astro";
+import EmailSignupForm from "../components/EmailSignupForm.astro";
 ---
 
 <Layout>
@@ -9,6 +10,9 @@ import HeroCentered from "../components/HeroCentered.astro";
         title="Write songs, express yourself"
         description="Lightning Lessons is an online music school and community focused on helping you write the songs you hear in your head"
         link="classes/write-a-song-using-music-theory"
-        linkText="Sign up for a class"
+        linkText="Browse classes"
     />
+    <div class="text-center">
+        <EmailSignupForm />
+    </div>
 </Layout>

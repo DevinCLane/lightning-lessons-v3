@@ -14,7 +14,7 @@ type Variables = {
 };
 
 const subscribeSchema = z.object({
-    email: z.string().email("Invalid email format"),
+    email: z.email("Invalid email format"),
 });
 
 const referrerSchema = z.object({
