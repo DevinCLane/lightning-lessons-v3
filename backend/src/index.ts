@@ -320,48 +320,57 @@ app.post("/subscribe", zValidator("form", subscribeSchema), async (context) => {
 
     // to do: save email to database
 
-    const { error: contactError } = await resend.contacts.create({
-        email: email,
-    });
+    // create contact
+    const { data: contactData, error: contactError } =
+        await resend.contacts.create({
+            email: email,
+        });
 
     if (contactError) return context.json(contactError, 400);
 
-    const { error: segmentError } = await resend.contacts.segments.add({
-        email: email,
-        segmentId: "c0716cf3-4adc-4176-8ba1-152c565a14b6",
-    });
+    const { data: segmentData, error: segmentError } =
+        await resend.contacts.segments.add({
+            email: email,
+            segmentId: "c0716cf3-4adc-4176-8ba1-152c565a14b6",
+        });
 
     if (segmentError) return context.json(segmentError, 400);
 
-    // to do: send confirmation email
-    const { data, error } = await resend.emails.send({
-        from: "Devin <devin@notifications.lightninglessons.com>",
-        to: email,
-        subject: "Welcome to Lightning Lessons",
-        html: `<html>
-            <head>
-                <meta charset="UTF-8" />
-                <title>⚡️ Lightning Lessons newsletter signup</title>
-            </head>
-            <body>
-                <div>
-                    <p>Thanks for signing up for the Lightning Lessons email list.</p>
-                    <p>
-                        I'll send you an email when we announce new classes. Unsubscribe any time.
-                    </p>
-                    <p>
-                        Feel free to reply to this email with any classes you would like to see. This goes to my personal inbox that I read.
-                    </p>
-                    <p>
-                        Be sure to subscribe to our YouTube and follow us on Instagram.
-                        <a href="https://lightninglessons.com/classes/write-a-song-using-music-theory/">Sign up here</a>
-                    </p>
-                    <p>Hopefully see you in a class soon!</p>
-                </div>
-            </body>
-        </html>`,
-        replyTo: "devin@lightninglessons.com",
-    });
+    if (contactData && segmentData) {
+        // avoid Resend API rate limits of 2 requests per second
+        setTimeout(async () => {
+            const { error: emailError } = await resend.emails.send({
+                from: "Devin <devin@notifications.lightninglessons.com>",
+                to: email,
+                subject: "⚡️ Welcome to Lightning Lessons",
+                html: `<html>
+                    <head>
+                        <meta charset="UTF-8" />
+                        <title>⚡️ Welcome to the Lightning Lessons newsletter</title>
+                    </head>
+                    <body>
+                        <div>
+                            <p>Thanks for signing up for the ⚡️ Lightning Lessons email list ⚡️.</p>
+                            <p>
+                                I'll send you an email when we announce new classes. Unsubscribe any time.
+                            </p>
+                            <p>
+                                Feel free to reply to this email with any classes you would like to see. This goes to my personal inbox.
+                            </p>
+                            <p>
+                                Be sure to subscribe to our <a href="https://www.youtube.com/@LightningLessons">YouTube channel</a> and follow us on <a href="https://www.instagram.com/lightninglessons/">Instagram</a>.
+                            </p>
+                            <p>Hope to see you in a class soon!</p>
+                            <p>-Devin</p>
+                            <p><a href="https://lightninglessons.com/">Lightning Lessons</a></p>
+                        </div>
+                    </body>
+                </html>`,
+                replyTo: "devin@lightninglessons.com",
+            });
+            if (emailError) return context.json(emailError, 400);
+        }, 2000);
+    }
 
     return context.redirect(`${baseUrl}/email-signup/return`);
 });
