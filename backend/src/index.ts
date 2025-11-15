@@ -13,6 +13,11 @@ type Variables = {
     stripe: Stripe;
 };
 
+const subscribeSchema = z.object({
+    email: z.email("Invalid email format"),
+    phone1: z.string().optional(),
+});
+
 const referrerSchema = z.object({
     firstName1: z.string().nonempty(),
     lastName1: z.string().nonempty(),
@@ -143,6 +148,9 @@ app.post("/create-checkout-session", async (context) => {
     return context.json({ clientSecret: session.client_secret });
 });
 
+/**
+ * gets the stripe session status
+ */
 app.get("/session_status", async (context) => {
     // Retrieve the Stripe client from the variable object
     const stripe = context.var.stripe;
@@ -295,6 +303,79 @@ app.post(
         return context.redirect(`${baseUrl}/mutual-referrer/return`);
     }
 );
+
+/**
+ * email newsletter signup
+ */
+
+app.post("/subscribe", zValidator("form", subscribeSchema), async (context) => {
+    const baseUrl = process.env.BASE_URL ?? "http://localhost:4321";
+
+    const { email, phone1 } = context.req.valid("form");
+
+    // honeypot spam thwarting
+    if (phone1) {
+        return context.text("invalid submission", 400);
+    }
+
+    // to do: save email to database
+
+    // create contact
+    const { data: contactData, error: contactError } =
+        await resend.contacts.create({
+            email: email,
+        });
+
+    if (contactError) return context.json(contactError, 400);
+
+    const { data: segmentData, error: segmentError } =
+        await resend.contacts.segments.add({
+            email: email,
+            segmentId: "c0716cf3-4adc-4176-8ba1-152c565a14b6",
+        });
+
+    if (segmentError) return context.json(segmentError, 400);
+
+    if (contactData && segmentData) {
+        // avoid Resend API rate limits of 2 requests per second
+        setTimeout(async () => {
+            const { error: emailError } = await resend.emails.send({
+                from: "Devin <devin@notifications.lightninglessons.com>",
+                to: email,
+                subject: "⚡️ Welcome to Lightning Lessons",
+                html: `<html>
+                    <head>
+                        <meta charset="UTF-8" />
+                        <title>⚡️ Welcome to the Lightning Lessons newsletter</title>
+                    </head>
+                    <body>
+                        <div>
+                            <p>Thanks for signing up for the ⚡️ Lightning Lessons email list ⚡️.</p>
+                            <p>
+                                I'll send you an email when we announce new classes. Unsubscribe any time.
+                            </p>
+                            <p>
+                                Feel free to reply to this email with any classes you would like to see. This goes to my personal inbox.
+                            </p>
+                            <p>
+                                Be sure to subscribe to our <a href="https://www.youtube.com/@LightningLessons">YouTube channel</a> and follow us on <a href="https://www.instagram.com/lightninglessons/">Instagram</a>.
+                            </p>
+                            <p>Hope to see you in a class soon!</p>
+                            <p>-Devin</p>
+                            <p><a href="https://lightninglessons.com/">Lightning Lessons</a></p>
+                        </div>
+                    </body>
+                </html>`,
+                replyTo: "devin@lightninglessons.com",
+            });
+            if (emailError) return context.json(emailError, 400);
+        }, 2000);
+    }
+
+    return context.redirect(`${baseUrl}/email-signup/return`);
+});
+
+// to do: create email list unsubscribe API endpoint
 
 serve(
     {

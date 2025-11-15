@@ -1,0 +1,53 @@
+---
+const formUrl = import.meta.env.PUBLIC_API_URL + "/subscribe";
+---
+
+<h1 class="text-xl mt-3 mb-6">Sign up to hear about new classes</h1>
+<form id="emailForm" action={formUrl} method="post">
+    <div class="join">
+        <div>
+            <label class="input validator join-item md:w-70">
+                <!-- email icon -->
+                <svg
+                    class="h-[1em] opacity-50"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                >
+                    <g
+                        stroke-linejoin="round"
+                        stroke-linecap="round"
+                        stroke-width="2.5"
+                        fill="none"
+                        stroke="currentColor"
+                    >
+                        <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"
+                        ></path>
+                    </g>
+                </svg>
+                <input
+                    type="email"
+                    name="email"
+                    placeholder="musician@cool.com"
+                    required
+                />
+            </label>
+            <div class="validator-hint hidden">
+                Please enter valid email address
+            </div>
+            <div style="position: absolute; left: -9999px; opacity: 0;">
+                <label class="label">Phone number</label>
+                <input
+                    aria-hidden="true"
+                    type="tel"
+                    class="input rounded"
+                    placeholder="Phone number"
+                    name="phone1"
+                    tabindex="-1"
+                    autocomplete="off"
+                />
+            </div>
+        </div>
+        <button class="btn btn-neutral join-item">Sign up</button>
+    </div>
+</form>
