@@ -15,6 +15,7 @@ type Variables = {
 
 const subscribeSchema = z.object({
     email: z.email("Invalid email format"),
+    phone1: z.string().optional(),
 });
 
 const referrerSchema = z.object({
@@ -308,19 +309,64 @@ app.post(
  */
 
 app.post("/subscribe", zValidator("form", subscribeSchema), async (context) => {
-    const baseUrl =
-        context.req.header("Host") === "lightninglessons"
-            ? "https://lightninglessons.com"
-            : `http://localhost:4321`;
+    const baseUrl = process.env.BASE_URL ?? "http://localhost:4321";
 
-    const { email } = context.req.valid("form");
-    console.log("successful email received:", email);
+    const { email, phone1 } = context.req.valid("form");
+
+    // honeypot spam thwarting
+    if (phone1) {
+        return context.text("invalid submission", 400);
+    }
 
     // to do: save email to database
-    // to do: add Resend audience contact
+
+    const { error: contactError } = await resend.contacts.create({
+        email: email,
+    });
+
+    if (contactError) return context.json(contactError, 400);
+
+    const { error: segmentError } = await resend.contacts.segments.add({
+        email: email,
+        segmentId: "c0716cf3-4adc-4176-8ba1-152c565a14b6",
+    });
+
+    if (segmentError) return context.json(segmentError, 400);
+
+    // to do: send confirmation email
+    const { data, error } = await resend.emails.send({
+        from: "Devin <devin@notifications.lightninglessons.com>",
+        to: email,
+        subject: "Welcome to Lightning Lessons",
+        html: `<html>
+            <head>
+                <meta charset="UTF-8" />
+                <title>⚡️ Lightning Lessons newsletter signup</title>
+            </head>
+            <body>
+                <div>
+                    <p>Thanks for signing up for the Lightning Lessons email list.</p>
+                    <p>
+                        I'll send you an email when we announce new classes. Unsubscribe any time.
+                    </p>
+                    <p>
+                        Feel free to reply to this email with any classes you would like to see. This goes to my personal inbox that I read.
+                    </p>
+                    <p>
+                        Be sure to subscribe to our YouTube and follow us on Instagram.
+                        <a href="https://lightninglessons.com/classes/write-a-song-using-music-theory/">Sign up here</a>
+                    </p>
+                    <p>Hopefully see you in a class soon!</p>
+                </div>
+            </body>
+        </html>`,
+        replyTo: "devin@lightninglessons.com",
+    });
 
     return context.redirect(`${baseUrl}/email-signup/return`);
 });
+
+// to do: create email list unsubscribe API endpoint
 
 serve(
     {

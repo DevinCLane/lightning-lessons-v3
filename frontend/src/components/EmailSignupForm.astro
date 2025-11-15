@@ -35,6 +35,18 @@ const formUrl = import.meta.env.PUBLIC_API_URL + "/subscribe";
             <div class="validator-hint hidden">
                 Please enter valid email address
             </div>
+            <div style="position: absolute; left: -9999px; opacity: 0;">
+                <label class="label">Phone number</label>
+                <input
+                    aria-hidden="true"
+                    type="tel"
+                    class="input rounded"
+                    placeholder="Phone number"
+                    name="phone1"
+                    tabindex="-1"
+                    autocomplete="off"
+                />
+            </div>
         </div>
         <button class="btn btn-neutral join-item">Sign up</button>
     </div>
