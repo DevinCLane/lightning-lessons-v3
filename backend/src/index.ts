@@ -377,6 +377,12 @@ app.post("/subscribe", zValidator("form", subscribeSchema), async (context) => {
 
 // to do: create email list unsubscribe API endpoint
 
+/**
+ * Email newsletter unsubscribe
+ */
+
+app.post("/unsubscribe", async (context) => {});
+
 serve(
     {
         fetch: app.fetch,
